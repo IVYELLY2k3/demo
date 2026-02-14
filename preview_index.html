@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identify Child | ChildTrace AI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="background-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-camera">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>ChildTrace <span style="font-weight: 300; opacity: 0.8;">AI</span></span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <div class="glass-card">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1>Trace & Identify</h1>
+                <p>Upload a clear frontal photo. Our AI scans millions of records in seconds.</p>
+            </div>
+
+            <form id="upload-form" action="#" method="POST" enctype="multipart/form-data">
+                <div class="upload-area" id="drop-area">
+                    <input type="file" name="file" id="file" class="upload-input" accept="image/*" required
+                        onchange="previewImage(event)">
+                    <div class="upload-content">
+                        <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="64" height="64"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <h3 style="color: white; margin-bottom: 0.5rem;">Click or Drag & Drop</h3>
+                        <p>Supports High-Res JPG, PNG</p>
+                    </div>
+                </div>
+
+                <!-- Image Preview -->
+                <div class="preview-container" id="preview-container" style="text-align: center;">
+                    <p
+                        style="text-align: center; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px;">
+                        Image Selected</p>
+                    <img id="preview" class="preview-image" src="#" alt="Image Preview">
+                </div>
+
+                <div style="margin-top: 3rem; text-align: center;">
+                    <button type="submit" class="btn btn-primary" id="scan-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Initiate Deep Scan
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Scanning Overlay -->
+        <div id="loading-overlay">
+            <div class="scanner"></div>
+            <h2 class="pulse-text" style="margin-top: 1rem;">Scanning Biometrics...</h2>
+            <p style="color: var(--text-muted); margin-top: 0.5rem; letter-spacing: 1px;">Accessing Global Database</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 AI-Based Child Tracing System. Built for safety.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        const form = document.getElementById('upload-form');
+        const overlay = document.getElementById('loading-overlay');
+        const dropArea = document.getElementById('drop-area');
+
+        // Show loading overlay
+        form.addEventListener('submit', function (e) {
+            e.preventDefault(); // Stop actual submit in preview
+            overlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = 'preview_result.html';
+            }, 3000);
+        });
+
+        // Preview Logic
+        function previewImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('preview');
+            const container = document.getElementById('preview-container');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                    // Scroll to preview
+                    setTimeout(() => {
+                        container.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Drag and Drop
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropArea.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropArea.classList.remove('drag-over');
+            }, false);
+        });
+
+        dropArea.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            document.getElementById('file').files = files;
+            const event = { target: document.getElementById('file') };
+            previewImage(event);
+        });
+    </script>
+
+</body>
+
+</html>

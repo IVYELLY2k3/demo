@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results | ChildTrace AI</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="background-animate">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-camera">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>ChildTrace <span style="font-weight: 300; opacity: 0.8;">AI</span></span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Result Content -->
+
+        <div class="glass-card">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <!-- Match Found State -->
+                <div
+                    style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; border: 2px solid var(--success);">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <h1 style="color: var(--success); background: none; -webkit-text-fill-color: var(--success);">Identity
+                    Verified</h1>
+                <p>Database match confirmed with high confidence.</p>
+            </div>
+
+            <div class="result-grid">
+                <!-- Uploaded Image -->
+                <div class="result-card">
+                    <p
+                        style="font-weight: 500; margin-bottom: 1rem; text-align: center; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;">
+                        Input Source</p>
+                    <svg class="result-image" width="300" height="300" xmlns="http://www.w3.org/2000/svg"
+                        style="background:#1e293b; border: 2px solid rgba(255,255,255,0.2); border-radius:12px;">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#ccc"
+                            font-family="sans-serif">User Upload</text>
+                    </svg>
+                </div>
+
+                <!-- Matched Result -->
+                <div class="result-card"
+                    style="border-color: var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);">
+                    <p
+                        style="font-weight: 700; margin-bottom: 1rem; text-align: center; color: var(--success); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;">
+                        Database Match</p>
+                    <svg class="result-image" width="300" height="300" xmlns="http://www.w3.org/2000/svg"
+                        style="background:#064e3b; border: 2px solid var(--success); border-radius:12px;">
+                        <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#34d399"
+                            font-family="sans-serif">Database Match</text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="match-details">
+                <h3 style="margin-bottom: 1.5rem; color: white;">Subject Profile</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Name</p>
+                        <p style="color: white; font-weight: 600; font-size: 1.2rem; margin-bottom: 1rem;">Jane Doe</p>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Confidence</p>
+                        <p style="color: var(--success); font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem;">
+                            98.7%</p>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Status</p>
+                        <span
+                            style="background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 600;">MISSING</span>
+                    </div>
+                    <div>
+                        <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Last Seen</p>
+                        <p style="color: white; font-weight: 500; font-size: 1rem;">2024-02-13</p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                style="margin-top: 3rem; text-align: center; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                <a href="preview_index.html" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    New Scan
+                </a>
+
+                <a href="#" class="btn btn-primary"
+                    onclick="alert('Police Authority Alert System - Simulating contact...')">
+                    Alert Authorities
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                        </path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 AI-Based Child Tracing System. Built for safety.</p>
+    </footer>
+
+</body>
+
+</html>

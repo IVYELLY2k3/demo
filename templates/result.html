@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Scan Results | ReuniteAI{% endblock %}
+
+{% block content %}
+
+<div class="glass-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        {% if match_found %}
+        <div
+            style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; border: 2px solid var(--success);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+        </div>
+        <h1 style="color: var(--success); background: none; -webkit-text-fill-color: var(--success);">Match Found!</h1>
+        <p>Child detected in video: <strong>{{ video_name }}</strong></p>
+        {% else %}
+        <div
+            style="width: 80px; height: 80px; background: rgba(239, 68, 68, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem auto; border: 2px solid var(--danger);">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+        <h1 style="color: var(--danger); background: none; -webkit-text-fill-color: var(--danger);">No Match Found</h1>
+        <p>The system scanned the entire video but could not confirm a match.</p>
+        {% endif %}
+    </div>
+
+    {% if match_found %}
+    <div class="result-grid">
+        <!-- Uploaded Target Image -->
+        <div class="result-card">
+            <p
+                style="font-weight: 500; margin-bottom: 1rem; text-align: center; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;">
+                Target Child</p>
+            <img src="{{ target_image_url }}" alt="Uploaded Target" class="result-image"
+                style="border: 2px solid rgba(255,255,255,0.2);">
+        </div>
+
+        <!-- Matched Frame from Video -->
+        <div class="result-card" style="border-color: var(--success); box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);">
+            <p
+                style="font-weight: 700; margin-bottom: 1rem; text-align: center; color: var(--success); text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;">
+                Matched Frame</p>
+            <img src="{{ matched_frame_url }}" alt="Matching Frame" class="result-image">
+        </div>
+    </div>
+
+    <div class="match-details">
+        <h3 style="margin-bottom: 1.5rem; color: white;">Scan Report</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+                <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Confidence</p>
+                <p style="color: var(--success); font-weight: 700; font-size: 1.2rem; margin-bottom: 1rem;">{{
+                    confidence_score }}%</p>
+            </div>
+            <div>
+                <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Timestamp</p>
+                <p style="color: white; font-weight: 500; font-size: 1.2rem; margin-bottom: 1rem;">{{ timestamp }}</p>
+            </div>
+            <div>
+                <p style="margin-bottom: 0.25rem; font-size: 0.8rem; text-transform: uppercase;">Source Video</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">{{ video_name }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div style="margin-top: 3rem; text-align: center;">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">
+            Scan Another Video
+        </a>
+    </div>
+</div>
+
+{% endblock %}

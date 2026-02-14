@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReuniteAI | Upload</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <i class="fas fa-search-location"></i> ReuniteAI
+        </a>
+    </nav>
+
+    <div class="main-layout" style="display: block;">
+        <div class="upload-wrapper">
+            <h1 style="color: var(--text-main);">ReuniteAI - Video Scanner</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">
+                Upload a clear photo to automatically scan all {{ video_count }} videos in the archive.
+            </p>
+
+            {% with messages = get_flashed_messages(category_filter=["error"]) %}
+            {% if messages %}
+            {% for message in messages %}
+            <div style="background: #fee2e2; color: #b91c1c; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <div class="upload-box" onclick="document.getElementById('child_photo').click()">
+                    <i class="fas fa-cloud-upload-alt"
+                        style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+                    <h3 style="margin: 0; color: var(--text-main);">Click to Upload Photo</h3>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">JPG or PNG</p>
+                    <input type="file" name="child_photo" id="child_photo" style="display: none;" accept="image/*"
+                        required onchange="previewFile()">
+                </div>
+
+                <div id="preview-area" style="display: none; margin-top: 2rem;">
+                    <p style="color: var(--text-muted);">Preview:</p>
+                    <img id="preview" src="#" alt="Preview"
+                        style="max-width: 150px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-bolt"></i> Start AI Investigation
+                    </button>
+                </div>
+            </form>
+
+            {% if video_count == 0 %}
+            <div
+                style="background: #fef2f2; border: 1px solid #fee2e2; padding: 1rem; border-radius: 8px; margin-top: 2rem; color: #b91c1c; display: flex; align-items: center; gap: 1rem; text-align: left;">
+                <i class="fas fa-exclamation-circle text-xl"></i>
+                <div>
+                    <strong>System Error: No Videos Found</strong>
+                    <div style="font-size: 0.9rem; margin-top: 0.25rem;">Please add video files (.mp4) to the
+                        <code>cctv_videos/</code> folder before scanning.
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function previewFile() {
+            const preview = document.getElementById('preview');
+            const previewArea = document.getElementById('preview-area');
+            const fileInput = document.getElementById('child_photo');
+
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewArea.style.display = "block";
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+
+</html>

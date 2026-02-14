@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Face Scanning | Live Monitor</title>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .queue-container {
+            height: 100%;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .stream-status {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            text-align: center;
+            display: none;
+            z-index: 5;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fas fa-eye"></i> ReuniteAI
+        </div>
+        <div
+            style="font-size: 0.8rem; color: #94a3b8; font-weight: 500; display: flex; align-items: center; gap: 0.5rem;">
+            <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+            SYSTEM OPERATIONAL
+        </div>
+    </nav>
+
+    <div class="dashboard-grid">
+        <!-- VIDEO PLAYER -->
+        <div class="video-card">
+            <div class="video-header">
+                <div style="font-weight: 600; color: #fff;">
+                    <i class="fas fa-video" style="margin-right: 0.5rem; color: var(--secondary);"></i>
+                    Surveillance Feed
+                </div>
+                <div class="live-badge">
+                    <div class="pulse-dot"></div> LIVE AI ANALYSIS
+                </div>
+            </div>
+
+            <div class="monitor-view">
+                <div class="scan-line"></div>
+
+                <!-- Loading State -->
+                <div class="stream-status" id="loading-state">
+                    <div class="loading-spinner" style="margin: 0 auto 1rem auto;"></div>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Connecting to AI Engine...</p>
+                </div>
+
+                <!-- Video Stream -->
+                <img src="{{ url_for('video_feed') }}" alt="Waiting for video stream..."
+                    onload="document.getElementById('loading-state').style.display='none';"
+                    onerror="document.getElementById('loading-state').style.display='block';">
+            </div>
+
+            <!-- Stats Bar -->
+            <div
+                style="background: rgba(15,23,42,0.8); padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.25rem;">
+                        Processing Speed</div>
+                    <div style="font-weight: 600; color: #fff; font-size: 1.1rem;">REAL-TIME</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.25rem;">
+                        Detector</div>
+                    <div style="font-weight: 600; color: #a78bfa; font-size: 1rem;"><i class="fas fa-bolt"></i>
+                        MediaPipe</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.7rem; color: #64748b; text-transform: uppercase; margin-bottom: 0.25rem;">
+                        Status</div>
+                    <div id="status-tag" style="font-weight: 600; color: #38bdf8;">Initialization</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div class="sidebar-card">
+            <div class="video-header" style="background: rgba(30, 41, 59, 0.5);">
+                <div style="font-weight: 600; color: #fff;">
+                    <i class="fas fa-list" style="margin-right: 0.5rem; color: #94a3b8;"></i>
+                    Scan Queue
+                </div>
+                <div
+                    style="font-size: 0.8rem; background: rgba(255,255,255,0.1); padding: 0.1rem 0.5rem; border-radius: 4px;">
+                    {{ queue|length }} Files</div>
+            </div>
+
+            <div class="queue-container">
+                <ul class="queue-list" id="queue-list-ul">
+                    {% for video in queue %}
+                    <li class="queue-item" id="vid-{{loop.index0}}">
+                        <div class="file-icon">
+                            <i class="fas fa-file-video"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div
+                                style="font-weight: 500; font-size: 0.9rem; color: #f1f5f9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">
+                                {{ video }}</div>
+                            <div class="queue-status" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
+                                Pending</div>
+                        </div>
+                        <div class="status-indicator"></div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const statusTag = document.getElementById('status-tag');
+
+        // Poll status every 500ms for responsiveness
+        const poller = setInterval(() => {
+            fetch('/check_status')
+                .then(res => res.json())
+                .then(data => {
+                    // Update main status tag
+                    if (data.status === 'match_found') {
+                        statusTag.innerHTML = "<span style='color: #ef4444;'>MATCH FOUND!</span>";
+                        document.querySelector('.scan-line').style.display = 'none'; // Stop scan animation
+
+                        clearInterval(poller);
+                        setTimeout(() => {
+                            window.location.href = "{{ url_for('result') }}";
+                        }, 1500); // 1.5s delay to see the match
+
+                    } else if (data.status === 'scanning') {
+                        const total = document.querySelectorAll('.queue-item').length;
+                        const current = (data.current_video_index || 0) + 1;
+                        statusTag.innerHTML = `<span style='color: #38bdf8;'>Scanning Video ${current} of ${total}</span>`;
+                    } else if (data.status === 'initializing') {
+                        statusTag.innerHTML = "<span style='color: #fca5a5;'>Initializing AI...</span>";
+                    } else if (data.status === 'error') {
+                        statusTag.innerHTML = "<span style='color: #ef4444;'>AI ERROR - Check Console</span>";
+                    } else if (data.status === 'completed') {
+                        statusTag.innerHTML = "<span style='color: #10b981;'>Scan Complete</span>";
+                        setTimeout(() => {
+                            window.location.href = "{{ url_for('result') }}";
+                        }, 1000);
+                    }
+
+                    // Update Queue List UI
+                    const currentIndex = data.current_video_index;
+                    const listItems = document.querySelectorAll('.queue-item');
+
+                    listItems.forEach((item, index) => {
+                        const statusText = item.querySelector('.queue-status');
+                        const icon = item.querySelector('.file-icon');
+
+                        if (index < currentIndex) {
+                            // Completed items
+                            statusText.textContent = "Scanned";
+                            statusText.style.color = "#10b981";
+                            icon.style.color = "#10b981";
+                            item.style.opacity = "0.5";
+                        } else if (index === currentIndex) {
+                            // Active item
+                            item.classList.add('active');
+                            statusText.textContent = "Analyzing...";
+                            statusText.style.color = "#818cf8";
+                            icon.style.background = "#6366f1";
+                            icon.style.color = "#fff";
+                            item.style.opacity = "1";
+
+                            // Scroll currently active item into view
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        } else {
+                            // Pending items
+                            item.classList.remove('active');
+                            statusText.textContent = "Pending";
+                            item.style.opacity = "1";
+                        }
+                    });
+
+                })
+                .catch(err => console.error(err));
+        }, 500);
+    </script>
+</body>
+
+</html>
