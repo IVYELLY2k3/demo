@@ -264,3 +264,39 @@ body {
         top: 100%;
     }
 }
+/* Result Page Layout */
+.result-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+    align-items: start;
+}
+
+.result-card {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-image {
+    width: 100%;
+    height: 200px; 
+    object-fit: contain;
+    border-radius: 8px;
+    background: #000;
+}
+
+.match-details {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .result-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
