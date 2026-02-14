@@ -163,6 +163,14 @@
 
                     } else if (data.status === 'scanning') {
                         const total = document.querySelectorAll('.queue-item').length;
+
+                        // Fix for Race Condition: If backend has populated queue but frontend hasn't
+                        if (total === 0) {
+                            console.log("Queue mismatch. Reloading to fetch video list...");
+                            window.location.reload();
+                            return;
+                        }
+
                         const current = (data.current_video_index || 0) + 1;
                         statusTag.innerHTML = `<span style='color: #38bdf8;'>Scanning Video ${current} of ${total}</span>`;
                     } else if (data.status === 'initializing') {
